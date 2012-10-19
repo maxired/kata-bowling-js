@@ -7,7 +7,7 @@ var bowlingGame = function(rolls) {
         var f = 0;
         for(var r = 0, maxR = rolls.length; r < maxR; r++) {                        
             frames[f] = frame(rolls[r]);
-            if(!frames[f].isStrike()) {
+            if(!frames[f].isStrike() && r < maxR-1) {
                 frames[f] = frame(rolls[r]+rolls[r+1]);
                 r++;
             }           
@@ -78,7 +78,7 @@ var frame = function(value) {
         } else if(value.indexOf(SPARE) != -1) {
              down = 10;
         } else {
-            down = parseInt(value);
+            down = parseInt(value[0])+(value.length > 1 ? parseInt(value[1]) : 0);
         }       
         return down;
     }

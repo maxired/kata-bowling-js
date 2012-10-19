@@ -74,6 +74,12 @@ describe("BowlingGame", function() {
         game = bowlingGame("5/5/5/5/5/----------");
         expect(game.score()).toBe(70);
     });
+    
+    it("should score 82 in 10 frames if the player rolls 9-0 3-5 6-1 3-6 8-1 5-3 2-5 8-0 7-1 8-1", function() {
+        game = bowlingGame("90356136815325807181");
+        expect(game.frames.length).toBe(10);
+        expect(game.score()).toBe(82);
+    });
 });
 
 describe("nullFrame", function() {
