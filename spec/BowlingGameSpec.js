@@ -80,6 +80,16 @@ describe("BowlingGame", function() {
         expect(game.frames.length).toBe(10);
         expect(game.score()).toBe(82);
     });
+    
+    xit("should score 131 if the player rolls 9-0 3-/ 6-1 3-/ 8-1 5-/ 0-/ 8-0 7-/ 8-/-8", function() {
+        game = bowlingGame("903/613/815/0/807/8/8");
+        expect(game.score()).toBe(131);
+    });
+    
+    it("should score 131 if the player rolls 9-0 3-/ 6-1 3-/ 8-1 5-/ 0-/ 8-0 7-/ 8-/-8", function() {
+        game = bowlingGame("903/61");
+        expect(game.score()).toBe(32);
+    });
 });
 
 describe("nullFrame", function() {

@@ -86,10 +86,14 @@ var frame = function(value) {
     
     var firstRollScore = function() {
         var down = 0;
-        if(isSpare()) {
-             down = parseInt(value[0]);
+        if(value === STRIKE) {
+             down = 10;
+        } else if(value.indexOf(MISS) != -1) {
+            if(value[0] != MISS) {
+                down = parseInt(value[0]);
+            }
         } else {
-            down = knockedDownPins();
+            down = parseInt(value[0]);
         }       
         return down;
     }
