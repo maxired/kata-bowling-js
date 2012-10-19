@@ -86,7 +86,7 @@ var frame = function(value) {
     
     var firstRollScore = function() {
         var down = 0;
-        if(value.indexOf(SPARE) != -1) {
+        if(isSpare()) {
              down = parseInt(value[0]);
         } else {
             down = knockedDownPins();
