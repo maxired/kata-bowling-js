@@ -67,8 +67,14 @@ var frame = function(value) {
         var down = 0;
         if(value === STRIKE) {
              down = 10;
-        } else if(value === MISS) {
-             down = 0;
+        } else if(value.indexOf(MISS) != -1) {
+            if(value[0] === MISS) {
+                if(value.length > 1 && value[1] != MISS) {
+                    down =  parseInt(value[1]);
+                }
+            } else {
+                down = parseInt(value[0]);
+            }
         } else if(value.indexOf(SPARE) != -1) {
              down = 10;
         } else {

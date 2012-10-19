@@ -69,6 +69,11 @@ describe("BowlingGame", function() {
         game = bowlingGame("9-9-9-9-9-9-9-9-9-9-");
         expect(game.frames.length).toBe(10);
     });
+    
+    it("should score 70 if the player rolls 5 pairs of 5 and spare and misses everything else", function() {
+        game = bowlingGame("5/5/5/5/5/----------");
+        expect(game.score()).toBe(70);
+    });
 });
 
 describe("nullFrame", function() {
@@ -77,4 +82,10 @@ describe("nullFrame", function() {
         expect(nullFrame().isStrike()).toBe(false);
     });
     
+});
+
+describe("frame", function() {
+    it("should return 0 knockedDownPins if frame is a full miss", function() {
+        expect(frame("--").knockedDownPins()).toBe(0);
+    });
 });
