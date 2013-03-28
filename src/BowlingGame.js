@@ -1,119 +1,50 @@
+//
+/*(When scoring "X" indicates a strike, "/" indicates a spare, "-" indicates a miss)*/
+
 var bowlingGame = function(rolls) {
 
-    var that = {};
-    
-    var generateFrames = function(rolls) {
-        var frames = [];
-        var f = 0;
-        for(var r = 0, maxR = rolls.length; r < maxR; r++) {                        
-            frames[f] = frame(rolls[r]);
-            if(!frames[f].isStrike() && r < maxR-1) {
-                frames[f] = frame(rolls[r]+rolls[r+1]);
-                r++;
-            }           
-            f++;
-        }
-        return frames;
-    }    
-    
-    var frames = generateFrames(rolls);
-    
-    that.frames = frames;
-    
-    var bonusFrame = function(frameNumber) {
-        return frameNumber >= 10;
-    }
-    
-    var finalFrame = function(frameNumber) {
-        return frameNumber == 9;
-    }
-    
-    var score = function() {
-        var score = 0;
-        
-        for(var f = 0, maxF = frames.length; f < maxF; f++) {
-            var frame = frames[f];            
-            var knockedDownPins = frame.knockedDownPins();   
-            
-            var rollScore = knockedDownPins;                                    
-            
-            if(!finalFrame(f) && !bonusFrame(f)) {
-                if(frame.isStrike() || frame.isSpare()) {
-                    var nextFrame = f < maxF-1 ? frames[f+1] : nullFrame();
-                    rollScore += nextFrame.firstRollScore();
-                }                
-                if(frame.isStrike()) {
-                    var twoFramesAfter = f < maxF-2 ? frames[f+2] : nullFrame();
-                    rollScore += twoFramesAfter.firstRollScore();
-                }
-            }
-            score += rollScore;
-        }
-        return score;
-    }
-    that.score = score;
-    
-    return that;
+var turns = rolls.replace(/(\/|[0-9-][0-9-]|X)/g,"$1;").split(";").filter(function(item){ return item!=='';});;
+var module={};
+
+var goBackTurn = function(turns, total, nextOne, nextSecond ){
+if(turns.length===0){ return total};
+var current = turns[turns.length-1],
+    currentValue=0,
+    newTotal = total,
+	firstRow =0,
+	secondRow =0;
+	
+switch(current[0]){
+	case 'X' : firstRow=10; break;
+	case '-' : firstRow=0; break;
+	default: firstRow= +current[0];
+}
+
+
+if(current[1]){
+	switch(current[1]){
+		case '/' : secondRow=10-firstRow; break;
+		case '-' : secondRow=0; break;
+		default: secondRow= +current[1];
+	}
+}
+
+newTotal += firstRow + secondRow ;
+if(turns.length<10){
+	if((firstRow+secondRow)===10){
+		newTotal+=nextOne;
+	}
+	if((firstRow)===10){
+	newTotal+=nextSecond;
+	}
+}
+return goBackTurn(turns.slice(0, turns.length-1), newTotal, firstRow , current[1] ? secondRow :nextOne );
+}
+
+module.score=function(){
+	return goBackTurn(turns, 0, 0 ,0);
 };
 
-var frame = function(value) {    
-    var STRIKE = "X";
-    var SPARE = "/";
-    var MISS = "-";
-    
-    var that = {};    
-        
-    var knockedDownPins = function() {
-        var down = 0;
-        if(value === STRIKE) {
-             down = 10;
-        } else if(value.indexOf(MISS) != -1) {
-            if(value[0] === MISS) {
-                if(value.length > 1 && value[1] != MISS) {
-                    down =  parseInt(value[1]);
-                }
-            } else {
-                down = parseInt(value[0]);
-            }
-        } else if(value.indexOf(SPARE) != -1) {
-             down = 10;
-        } else {
-            down = parseInt(value[0])+(value.length > 1 ? parseInt(value[1]) : 0);
-        }       
-        return down;
-    }
-    that.knockedDownPins = knockedDownPins;
-    
-    var firstRollScore = function() {
-        var down = 0;
-        if(value === STRIKE) {
-             down = 10;
-        } else if(value.indexOf(MISS) != -1) {
-            if(value[0] != MISS) {
-                down = parseInt(value[0]);
-            }
-        } else {
-            down = parseInt(value[0]);
-        }       
-        return down;
-    }
-    that.firstRollScore = firstRollScore;
-    
-    var isStrike = function() {
-        return value === STRIKE;
-    }
-    that.isStrike = isStrike;
-    
-    var isSpare = function() {
-        return value.indexOf(SPARE) != -1;
-    }
-    that.isSpare = isSpare;
-        
-    return that;
-};
+return module;
 
-var nullFrame = function() {
-    var NULL_ROLL = "0";
-    var that = frame(NULL_ROLL);
-    return that;
-};
+}
